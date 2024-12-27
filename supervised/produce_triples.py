@@ -56,17 +56,25 @@ def score_fe(fe_format, fe_score_type, frame_conf, role_conf, link_conf):
     :param str fe_score_type: Which score to use for uris: svm, link or both (f1)
     """
     if fe_score_type == 'nothing':
-        return 
+        return None
 
     if fe_format == 'uri':
+        # Combine frame_conf and role_conf or link_conf depending on the fe_score_type
         if fe_score_type == 'svm':
-            return role_conf
+            return (frame_conf + role_conf) / 2
         elif fe_score_type == 'link':
-            return link_conf
+            return (frame_conf + link_conf) / 2
         elif fe_score_type == 'both':
-            return 2 * (role_conf * link_conf) / (role_conf + link_conf)
+            # Combine role_conf and link_conf using F1-style formula 
+            combined_conf = 2 * (role_conf * link_conf) / (role_conf + link_conf) if (role_conf + link_conf) > 0 else 0 
+            return (frame_conf + combined_conf) / 2
     else:
-        return role_conf
+        # For literal format, use frame_conf and role_conf
+        if frame_conf is not None and role_conf is not None: 
+            return (frame_conf + role_conf) / 2 
+        else: 
+            # Handle case if any of the values are None 
+            return 0
 
 
 def to_labeled(sentences, fe_score_type):
