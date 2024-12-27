@@ -21,7 +21,7 @@ import click
 NORMALIZER = DateNormalizer()
 
 
-def label_sentence(entity_linking_results, debug, numerical):
+def label_sentence(entity_linking_results, debug, numerical, language='italian'):
     """Produce a labeled sentence by comparing the linked entities to the frame definition
 
     :param str entity_linking_results: path to JSON file containing the results of the
@@ -65,7 +65,7 @@ def label_sentence(entity_linking_results, debug, numerical):
                     assigned_fes = []
                     for diz in val:
                         # Filter out linked stopwords
-                        if diz['chunk'].lower() in stopwords.StopWords.words('italian'):
+                        if diz['chunk'].lower() in stopwords.StopWords.words(language):
                             continue
 
                         chunk = {
